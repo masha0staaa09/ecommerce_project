@@ -95,3 +95,31 @@ def test_add_product():
 
     assert "Samsung" in category.products
     assert Category.product_count == old_product_count + 1
+
+
+def test_product_str():
+    product = Product("Samsung", "Смартфон", 100000, 5)
+    assert str(product) == (
+        "Samsung, 100000 руб. Остаток: 5 шт."
+    )
+
+
+def test_category_str():
+    product1 = Product("Samsung", "Смартфон", 100000, 5)
+    product2 = Product("iPhone", "Смартфон", 200000, 8)
+    category = Category(
+        "Смартфоны",
+        "Категория смартфонов",
+        [product1, product2]
+    )
+
+    assert str(category) == (
+        "Смартфоны, количество продуктов: 13 шт."
+    )
+
+
+def test_product_add():
+    product1 = Product("Samsung", "Смартфон", 100, 10)
+    product2 = Product("iPhone", "Смартфон", 200, 2)
+
+    assert product1 + product2 == 1400

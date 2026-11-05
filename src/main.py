@@ -33,6 +33,18 @@ class Product:
         else:
             print("Цена не должна быть нулевая или отрицательная")
 
+    def __str__(self) -> str:
+        return (
+            f"{self.name}, {self.price} руб. "
+            f"Остаток: {self.quantity} шт."
+        )
+
+    def __add__(self, other: "Product") -> float:
+        return (
+                self.price * self.quantity
+                + other.price * other.quantity
+        )
+
 
 class Category:
     """Класс для категорий"""
@@ -50,6 +62,17 @@ class Category:
         self.__products = products
         Category.category_count += 1
         Category.product_count += len(products)
+
+    def __str__(self) -> str:
+        total_quantity = 0
+
+        for product in self.__products:
+            total_quantity += product.quantity
+
+        return (
+            f"{self.name}, количество продуктов: "
+            f"{total_quantity} шт."
+        )
 
     def add_product(self, product: Product) -> None:
         self.__products.append(product)
