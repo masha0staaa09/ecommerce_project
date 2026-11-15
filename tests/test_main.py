@@ -1,5 +1,11 @@
 import pytest
-from main import Product, Category
+from main import (
+    BaseProduct,
+    Product,
+    Category,
+    Smartphone,
+    LawnGrass
+)
 
 
 def test_product():
@@ -14,7 +20,7 @@ def test_product():
     assert product.description == "256GB, Серый цвет, 200MP камера"
     assert product.price == 180000.0
     assert product.quantity == 5
-    assert "_Product__price" in vars(product)
+    assert "_BaseProduct__price" in vars(product)
 
 
 def test_new_product():
@@ -123,3 +129,75 @@ def test_product_add():
     product2 = Product("iPhone", "Смартфон", 200, 2)
 
     assert product1 + product2 == 1400
+
+
+def test_base_product_is_abstract():
+    with pytest.raises(TypeError):
+        BaseProduct("Samsung", "Смартфон", 1000, 5)
+
+
+def test_mixin_log(capsys):
+    Product("Samsung", "Смартфон", 1000, 5)
+
+    captured = capsys.readouterr()
+
+    assert "Создан объект: Product(" in captured.out
+    assert "Samsung" in captured.out
+    assert "1000" in captured.out
+    assert "5" in captured.out
+
+
+def test_smartphone():
+    smartphone = Smartphone(
+        "iPhone 15",
+        "Смартфон Apple",
+        120000,
+        5,
+        95.5,
+        "15 Pro",
+        256,
+        "Black"
+    )
+
+    assert smartphone.name == "iPhone 15"
+    assert smartphone.description == "Смартфон Apple"
+    assert smartphone.price == 120000
+    assert smartphone.quantity == 5
+
+    assert smartphone.efficiency == 95.5
+    assert smartphone.model == "15 Pro"
+    assert smartphone.memory == 256
+    assert smartphone.color == "Black"
+
+    assert isinstance(smartphone, Product)
+
+
+def test_lawn_grass():
+    grass = LawnGrass(
+        "Газонная трава",
+        "Устойчивая к засухе",
+        1500,
+        10,
+        "Россия",
+        "7-14 дней",
+        "Зелёный"
+    )
+
+    assert grass.name == "Газонная трава"
+    assert grass.description == "Устойчивая к засухе"
+    assert grass.price == 1500
+    assert grass.quantity == 10
+
+    assert grass.country == "Россия"
+    assert grass.germination_period == "7-14 дней"
+    assert grass.color == "Зелёный"
+
+    assert isinstance(grass, Product)
+
+
+def test_product_repr():
+    product = Product("Samsung", "Смартфон", 1000, 5)
+
+    assert repr(product) == (
+        "Product('Samsung', 'Смартфон', 1000, 5)"
+    )
