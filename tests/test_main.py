@@ -1,5 +1,5 @@
 import pytest
-from main import Product, Category
+from main import Product, Category, Smartphone, LawnGrass
 
 
 def test_product():
@@ -123,3 +123,65 @@ def test_product_add():
     product2 = Product("iPhone", "Смартфон", 200, 2)
 
     assert product1 + product2 == 1400
+
+
+def test_add_smartphones():
+    phone1 = Smartphone(
+        "Samsung", "256GB", 100000, 5,
+        95.5, "S23", 256, "Серый"
+    )
+    phone2 = Smartphone(
+        "iPhone", "512GB", 120000, 3,
+        98.5, "15 Pro", 512, "Чёрный"
+    )
+
+    assert phone1 + phone2 == 860000
+
+
+def test_add_different_products():
+    phone = Smartphone(
+        "Samsung", "256GB", 100000, 5,
+        95.5, "S23", 256, "Серый"
+    )
+    grass = LawnGrass(
+        "Газон", "Универсальная трава", 1500, 10,
+        "Россия", "10 дней", "Зелёный"
+    )
+
+    with pytest.raises(TypeError):
+        phone + grass
+
+
+def test_add_invalid_product():
+    category = Category("Товары", "Описание", [])
+
+    with pytest.raises(TypeError):
+        category.add_product("Samsung")
+
+    with pytest.raises(TypeError):
+        category.add_product(123)
+
+
+def test_add_lawn_grass():
+    grass1 = LawnGrass(
+        "Газон 1", "Описание", 1000, 5,
+        "Россия", "10 дней", "Зелёный"
+    )
+    grass2 = LawnGrass(
+        "Газон 2", "Описание", 2000, 3,
+        "Беларусь", "15 дней", "Зелёный"
+    )
+
+    assert grass1 + grass2 == 11000
+
+
+def test_add_product_and_smartphone():
+    product = Product("Товар", "Описание", 100, 2)
+
+    phone = Smartphone(
+        "Samsung", "256GB", 100000, 5,
+        95.5, "S23", 256, "Серый"
+    )
+
+    with pytest.raises(TypeError):
+        product + phone
