@@ -185,3 +185,23 @@ def test_add_product_and_smartphone():
 
     with pytest.raises(TypeError):
         product + phone
+
+
+def test_product_zero_quantity():
+    with pytest.raises(ValueError):
+        Product("Телефон", "Описание", 1000, 0)
+
+
+def test_middle_price():
+    product1 = Product("Телефон", "Описание", 1000, 5)
+    product2 = Product("Ноутбук", "Описание", 2000, 3)
+
+    category = Category("Техника", "Описание", [product1, product2])
+
+    assert category.middle_price() == 1500
+
+
+def test_middle_price_empty_category():
+    category = Category("Пустая категория", "Описание", [])
+
+    assert category.middle_price() == 0
