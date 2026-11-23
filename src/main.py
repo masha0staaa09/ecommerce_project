@@ -71,6 +71,10 @@ class Product(MixinLog, BaseProduct):
         )
 
     def __repr__(self) -> str:
+    def __add__(self, other: "Product") -> float:
+        if type(self) is not type(other):
+            raise TypeError("Можно складывать только товары одного класса")
+
         return (
             f"{self.__class__.__name__}("
             f"{self.name!r}, {self.description!r}, "
@@ -79,7 +83,7 @@ class Product(MixinLog, BaseProduct):
 
 
 class Smartphone(Product):
-    """Класс для смартфонов."""
+    """Класс для смартфонов"""
 
     def __init__(
         self,
@@ -93,6 +97,7 @@ class Smartphone(Product):
         color: str
     ) -> None:
         super().__init__(name, description, price, quantity)
+
         self.efficiency = efficiency
         self.model = model
         self.memory = memory
@@ -100,7 +105,7 @@ class Smartphone(Product):
 
 
 class LawnGrass(Product):
-    """Класс для газонной травы."""
+    """Класс для газонной травы"""
 
     def __init__(
         self,
@@ -113,6 +118,7 @@ class LawnGrass(Product):
         color: str
     ) -> None:
         super().__init__(name, description, price, quantity)
+
         self.country = country
         self.germination_period = germination_period
         self.color = color
@@ -147,6 +153,9 @@ class Category:
         )
 
     def add_product(self, product: Product) -> None:
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только объекты класса Product")
+
         self.__products.append(product)
         Category.product_count += 1
 

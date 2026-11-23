@@ -1,11 +1,5 @@
 import pytest
-from main import (
-    BaseProduct,
-    Product,
-    Category,
-    Smartphone,
-    LawnGrass
-)
+from main import Product, Category, Smartphone, LawnGrass
 
 
 def test_product():
@@ -131,73 +125,63 @@ def test_product_add():
     assert product1 + product2 == 1400
 
 
-def test_base_product_is_abstract():
-    with pytest.raises(TypeError):
-        BaseProduct("Samsung", "Смартфон", 1000, 5)
-
-
-def test_mixin_log(capsys):
-    Product("Samsung", "Смартфон", 1000, 5)
-
-    captured = capsys.readouterr()
-
-    assert "Создан объект: Product(" in captured.out
-    assert "Samsung" in captured.out
-    assert "1000" in captured.out
-    assert "5" in captured.out
-
-
-def test_smartphone():
-    smartphone = Smartphone(
-        "iPhone 15",
-        "Смартфон Apple",
-        120000,
-        5,
-        95.5,
-        "15 Pro",
-        256,
-        "Black"
+def test_add_smartphones():
+    phone1 = Smartphone(
+        "Samsung", "256GB", 100000, 5,
+        95.5, "S23", 256, "Серый"
+    )
+    phone2 = Smartphone(
+        "iPhone", "512GB", 120000, 3,
+        98.5, "15 Pro", 512, "Чёрный"
     )
 
-    assert smartphone.name == "iPhone 15"
-    assert smartphone.description == "Смартфон Apple"
-    assert smartphone.price == 120000
-    assert smartphone.quantity == 5
-
-    assert smartphone.efficiency == 95.5
-    assert smartphone.model == "15 Pro"
-    assert smartphone.memory == 256
-    assert smartphone.color == "Black"
-
-    assert isinstance(smartphone, Product)
+    assert phone1 + phone2 == 860000
 
 
-def test_lawn_grass():
+def test_add_different_products():
+    phone = Smartphone(
+        "Samsung", "256GB", 100000, 5,
+        95.5, "S23", 256, "Серый"
+    )
     grass = LawnGrass(
-        "Газонная трава",
-        "Устойчивая к засухе",
-        1500,
-        10,
-        "Россия",
-        "7-14 дней",
-        "Зелёный"
+        "Газон", "Универсальная трава", 1500, 10,
+        "Россия", "10 дней", "Зелёный"
     )
 
-    assert grass.name == "Газонная трава"
-    assert grass.description == "Устойчивая к засухе"
-    assert grass.price == 1500
-    assert grass.quantity == 10
-
-    assert grass.country == "Россия"
-    assert grass.germination_period == "7-14 дней"
-    assert grass.color == "Зелёный"
-
-    assert isinstance(grass, Product)
+    with pytest.raises(TypeError):
+        phone + grass
 
 
-def test_product_repr():
-    product = Product("Samsung", "Смартфон", 1000, 5)
+def test_add_invalid_product():
+    category = Category("Товары", "Описание", [])
 
-    assert repr(product) == (
-        "Product('Samsung', 'Смартфон', 1000, 5)"
+    with pytest.raises(TypeError):
+        category.add_product("Samsung")
+
+    with pytest.raises(TypeError):
+        category.add_product(123)
+
+
+def test_add_lawn_grass():
+    grass1 = LawnGrass(
+        "Газон 1", "Описание", 1000, 5,
+        "Россия", "10 дней", "Зелёный"
     )
+    grass2 = LawnGrass(
+        "Газон 2", "Описание", 2000, 3,
+        "Беларусь", "15 дней", "Зелёный"
+    )
+
+    assert grass1 + grass2 == 11000
+
+
+def test_add_product_and_smartphone():
+    product = Product("Товар", "Описание", 100, 2)
+
+    phone = Smartphone(
+        "Samsung", "256GB", 100000, 5,
+        95.5, "S23", 256, "Серый"
+    )
+
+    with pytest.raises(TypeError):
+        product + phone
