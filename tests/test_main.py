@@ -14,7 +14,7 @@ def test_product():
     assert product.description == "256GB, Серый цвет, 200MP камера"
     assert product.price == 180000.0
     assert product.quantity == 5
-    assert "_Product__price" in vars(product)
+    assert "_BaseProduct__price" in vars(product)
 
 
 def test_new_product():
