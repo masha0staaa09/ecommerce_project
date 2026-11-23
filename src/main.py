@@ -71,14 +71,21 @@ class Product(MixinLog, BaseProduct):
         )
 
     def __repr__(self) -> str:
-    def __add__(self, other: "Product") -> float:
-        if type(self) is not type(other):
-            raise TypeError("Можно складывать только товары одного класса")
-
         return (
             f"{self.__class__.__name__}("
             f"{self.name!r}, {self.description!r}, "
             f"{self.price!r}, {self.quantity!r})"
+        )
+
+    def __add__(self, other: "Product") -> float:
+        if type(self) is not type(other):
+            raise TypeError(
+                "Можно складывать только товары одного класса"
+            )
+
+        return (
+                self.price * self.quantity
+                + other.price * other.quantity
         )
 
 
