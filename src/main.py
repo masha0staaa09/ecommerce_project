@@ -1,6 +1,10 @@
-class Product:
-    """Класс для продукта"""
+from abc import ABC, abstractmethod
 
+
+class BaseProduct(ABC):
+    """Абстрактный базовый класс для продуктов."""
+
+    @abstractmethod
     def __init__(
         self,
         name: str,
@@ -12,15 +16,6 @@ class Product:
         self.description = description
         self.__price = price
         self.quantity = quantity
-
-    @classmethod
-    def new_product(cls, product_data: dict) -> "Product":
-        return cls(
-            product_data["name"],
-            product_data["description"],
-            product_data["price"],
-            product_data["quantity"]
-        )
 
     @property
     def price(self) -> float:
@@ -39,11 +34,94 @@ class Product:
             f"Остаток: {self.quantity} шт."
         )
 
-    def __add__(self, other: "Product") -> float:
+    def __add__(self, other: "BaseProduct") -> float:
         return (
-                self.price * self.quantity
-                + other.price * other.quantity
+            self.price * self.quantity
+            + other.price * other.quantity
         )
+
+
+class MixinLog:
+    """Миксин для вывода информации о создании объекта."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print(f"Создан объект: {self!r}")
+
+
+class Product(MixinLog, BaseProduct):
+    """Класс для продукта."""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int
+    ) -> None:
+        super().__init__(name, description, price, quantity)
+
+    @classmethod
+    def new_product(cls, product_data: dict) -> "Product":
+        return cls(
+            product_data["name"],
+            product_data["description"],
+            product_data["price"],
+            product_data["quantity"]
+        )
+
+    def __repr__(self) -> str:
+    def __add__(self, other: "Product") -> float:
+        if type(self) is not type(other):
+            raise TypeError("Можно складывать только товары одного класса")
+
+        return (
+            f"{self.__class__.__name__}("
+            f"{self.name!r}, {self.description!r}, "
+            f"{self.price!r}, {self.quantity!r})"
+        )
+
+
+class Smartphone(Product):
+    """Класс для смартфонов"""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        efficiency: float,
+        model: str,
+        memory: int,
+        color: str
+    ) -> None:
+        super().__init__(name, description, price, quantity)
+
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+
+class LawnGrass(Product):
+    """Класс для газонной травы"""
+
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        country: str,
+        germination_period: str,
+        color: str
+    ) -> None:
+        super().__init__(name, description, price, quantity)
+
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
 
 
 class Category:
@@ -75,6 +153,9 @@ class Category:
         )
 
     def add_product(self, product: Product) -> None:
+        if not isinstance(product, Product):
+            raise TypeError("Можно добавлять только объекты класса Product")
+
         self.__products.append(product)
         Category.product_count += 1
 
