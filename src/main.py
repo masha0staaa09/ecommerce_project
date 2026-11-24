@@ -59,6 +59,10 @@ class Product(MixinLog, BaseProduct):
         price: float,
         quantity: int
     ) -> None:
+        if quantity == 0:
+            raise ValueError(
+                "Товар с нулевым количеством не может быть добавлен"
+            )
         super().__init__(name, description, price, quantity)
 
     @classmethod
@@ -175,6 +179,15 @@ class Category:
                 f"Остаток: {product.quantity} шт.\n"
             )
         return result
+
+    def middle_price(self) -> float:
+        try:
+            total_price = sum(
+                product.price for product in self.__products
+            )
+            return total_price / len(self.__products)
+        except ZeroDivisionError:
+            return 0
 
 
 if __name__ == "main":  # pragma: no cover
